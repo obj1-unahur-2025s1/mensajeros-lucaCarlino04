@@ -1,9 +1,55 @@
-import example.pepita
+import mensajeros.*
 
-describe "group of tests for pepita" {
+test "Roberto puede entregar paquete pago con camión de 1 acoplado al puente" {
+  roberto.cambiarVehiculo(camion)
+  paquete.asignarMensajero(roberto)
+  paquete.cambiarDestino(puente)
+  paquete.pagarPaquete()
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
-  }
+  assert.equals(true, paquete.puedeEntregarse())
+}
 
+test "Neo con crédito no puede entregar paquete no pago a la matrix" {
+  paquete.asignarMensajero(neo)
+  paquete.cambiarDestino(matrix)
+
+  assert.equals(false, paquete.puedeEntregarse())
+}
+
+test "Contrato a Roberto" {
+  mensajeria.contratarMensajero(roberto)
+
+  assert.equals(true, mensajeria.mensajeros().contains(roberto))
+}
+
+test "Despido a Neo" {
+  mensajeria.contratarMensajero(roberto)
+  mensajeria.contratarMensajero(neo)
+  mensajeria.despedirMensajero(neo)
+
+  assert.equals(false, mensajeria.mensajeros().contains(neo))
+}
+
+test "Despido a todos" {
+  mensajeria.contratarMensajero(roberto)
+  mensajeria.contratarMensajero(neo)
+  mensajeria.contratarMensajero(chuck)
+  mensajeria.despedirAtodos()
+
+  assert.that(mensajeria.mensajeros().size() == 0)
+}
+
+test "El primer mensajero es neo. Puede entregar el paquete." {
+  mensajeria.contratarMensajero(neo)
+  mensajeria.contratarMensajero(chuck)
+
+  assert.equals(true, mensajeria.mensajeros().puedeEntregarElPrimero())
+}
+
+test "La mensajeria no tiene sobrepeso" {
+  mensajeria.contratarMensajero(neo)
+  mensajeria.contratarMensajero(chuck)
+  mensajeria.contratarMensajero(roberto)
+
+  assert.that(mensajeria.mensajeros().average{ mensajero => mensajero.peso() } < 500)
 }
